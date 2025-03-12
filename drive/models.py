@@ -1,6 +1,12 @@
 import uuid
+import os
 from django.db import models
 from accounts.models import User
+
+def user_directory_path(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = f"{uuid.uuid4()}.{ext}"
+    return os.path.join(instance.folder.partition.user.email, filename)
 
 class Partition(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -27,7 +33,14 @@ class File(models.Model):
     folder = models.ForeignKey(Folder, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     size = models.BigIntegerField()  # Size in bytes
+    file = models.FileField(upload_to=user_directory_path)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.name:
+            self.name = self.file.name
+        self.size = self.file.size
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
