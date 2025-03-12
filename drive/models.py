@@ -12,7 +12,7 @@ class Partition(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    size = models.BigIntegerField()  # Size in bytes
+    size = models.BigIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -31,15 +31,16 @@ class Folder(models.Model):
 class File(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     folder = models.ForeignKey(Folder, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
-    size = models.BigIntegerField()  # Size in bytes
+    name = models.CharField(max_length=255, blank=True)
     file = models.FileField(upload_to=user_directory_path)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def size(self):
+        return self.file.size
 
     def save(self, *args, **kwargs):
         if not self.name:
             self.name = self.file.name
-        self.size = self.file.size
         super().save(*args, **kwargs)
 
     def __str__(self):
