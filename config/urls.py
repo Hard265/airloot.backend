@@ -6,6 +6,8 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
+from django.conf import settings
+from django.conf.urls.static import static
 
 from drive.views import PartitionViewSet, FolderViewSet, FileViewSet
 from accounts.views import UserViewSet
@@ -22,4 +24,4 @@ urlpatterns = [
     path("api/v1/token/refresh/", TokenRefreshView.as_view(), name="token-refresh"),
     path("api/v1/token/verify/", TokenVerifyView.as_view(), name="token-verify"),
     path("admin/", admin.site.urls),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
