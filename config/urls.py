@@ -10,9 +10,9 @@ from rest_framework_simplejwt.views import (
 from drive.views import PartitionViewSet, FolderViewSet, FileViewSet
 
 router = routers.DefaultRouter()
-router.register("partitions/", PartitionViewSet, basename="partition")
-router.register("folders/", FolderViewSet, basename="folder")
-router.register("files/", FileViewSet, basename="file")
+router.register("partitions", PartitionViewSet, basename="partition")
+router.register("folders", FolderViewSet, basename="folder")
+router.register("files", FileViewSet, basename="file")
 
 urlpatterns = [
     path("api/v1/", include(router.urls)),
