@@ -8,11 +8,13 @@ from rest_framework_simplejwt.views import (
 )
 
 from drive.views import PartitionViewSet, FolderViewSet, FileViewSet
+from accounts.views import UserViewSet
 
 router = routers.DefaultRouter()
 router.register("partitions", PartitionViewSet, basename="partition")
 router.register("folders", FolderViewSet, basename="folder")
 router.register("files", FileViewSet, basename="file")
+router.register("users", UserViewSet, basename="user")
 
 urlpatterns = [
     path("api/v1/", include(router.urls)),
