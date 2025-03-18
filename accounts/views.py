@@ -10,6 +10,17 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView
 from .serializers import RegisterSerializer
 
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = get_user_model().objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsOwner]
+
+    def list(self, request):
+        if bool(request.user and request.is_authenticated):
+            self.queryset.filter(email=request.user.email)
+
+
 class WhoAmIView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -17,15 +28,10 @@ class WhoAmIView(APIView):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
 
+
 class StorageInfoView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         serializer = StorageInfoSerializer(request.user)
         return Response(serializer.data)
-
-class RegisterView(CreateAPIView):
-    queryset = get_user_model().objects.all()
-    serializer_class = RegisterSerializer
-    permission_classes = []
-
