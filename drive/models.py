@@ -27,6 +27,11 @@ class Folder(models.Model):
     name = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+        if not self.user:
+            self.user = self._state.adding and kwargs.get('user', None)
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return str(self.name)
 
@@ -43,6 +48,8 @@ class File(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
+        if not self.user:
+            self.user = self._state.adding and kwargs.get('user', None)
         if not self.name:
             self.name = self.file.name
         self.size = self.file.size

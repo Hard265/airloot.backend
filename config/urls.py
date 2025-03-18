@@ -9,11 +9,10 @@ from rest_framework_simplejwt.views import (
 from django.conf import settings
 from django.conf.urls.static import static
 
-from drive.views import PartitionViewSet, FolderViewSet, FileViewSet
-from accounts.views import UserViewSet
+from drive.views import FolderViewSet, FileViewSet
+from accounts.views import UserViewSet, WhoAmIView, StorageInfoView
 
 router = routers.DefaultRouter()
-router.register("partitions", PartitionViewSet, basename="partition")
 router.register("folders", FolderViewSet, basename="folder")
 router.register("files", FileViewSet, basename="file")
 router.register("users", UserViewSet, basename="user")
@@ -23,5 +22,7 @@ urlpatterns = [
     path("api/v1/token/", TokenObtainPairView.as_view(), name="token"),
     path("api/v1/token/refresh/", TokenRefreshView.as_view(), name="token-refresh"),
     path("api/v1/token/verify/", TokenVerifyView.as_view(), name="token-verify"),
+    path("api/v1/whoami/", WhoAmIView.as_view(), name="whoami"),
+    path("api/v1/details/", StorageInfoView.as_view(), name="details"),
     path("admin/", admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

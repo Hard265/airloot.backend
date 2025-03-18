@@ -35,3 +35,14 @@ class LoginSerializer(serializers.Serializer):
 
         data["user"] = user
         return data
+
+
+class StorageInfoSerializer(serializers.ModelSerializer):
+    used_storage = serializers.SerializerMethodField()
+
+    class Meta:
+        model = get_user_model()
+        fields = ["quota", "used_storage"]
+
+    def get_used_storage(self, obj):
+        return sum(file.size for file in obj.files.all())
