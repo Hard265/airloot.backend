@@ -6,11 +6,9 @@ from .serializers import UserSerializer, StorageInfoSerializer
 from .permissions import IsOwner
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = get_user_model().objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated, IsOwner]
+from rest_framework import status
+from rest_framework.generics import CreateAPIView
+from .serializers import RegisterSerializer
 
 class WhoAmIView(APIView):
     permission_classes = [IsAuthenticated]
@@ -25,4 +23,9 @@ class StorageInfoView(APIView):
     def get(self, request):
         serializer = StorageInfoSerializer(request.user)
         return Response(serializer.data)
+
+class RegisterView(CreateAPIView):
+    queryset = get_user_model().objects.all()
+    serializer_class = RegisterSerializer
+    permission_classes = []
 
