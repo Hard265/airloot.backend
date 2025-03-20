@@ -15,10 +15,11 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsOwner]
-
+    """
     def list(self, request):
         if bool(request.user and request.is_authenticated):
             self.queryset.filter(email=request.user.email)
+    """
 
 
 class WhoAmIView(APIView):
