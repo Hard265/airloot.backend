@@ -1,38 +1,20 @@
-from rest_framework import generics
 from django.contrib.auth import get_user_model
-from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from .serializers import UserSerializer, StorageInfoSerializer
-from .permissions import IsOwner
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.generics import CreateAPIView
-from .serializers import RegisterSerializer
+from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView
+from accounts.permissions import IsOwner
+from accounts.serializers import RegisterSerializer, UserSerializer
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class RegisterView(CreateAPIView):
+    queryset = get_user_model().objects.all()
+    serializer_class = RegisterSerializer
+    permission_classes = []  # Allow anyone to register
+
+
+class UserDetailView(RetrieveUpdateDestroyAPIView):
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsOwner]
-    """
-    def list(self, request):
-        if bool(request.user and request.is_authenticated):
-            self.queryset.filter(email=request.user.email)
-    """
+    permission_classes = [IsAuthenticated, IsOwner]
 
-
-class WhoAmIView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        serializer = UserSerializer(request.user)
-        return Response(serializer.data)
-
-
-class StorageInfoView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        serializer = StorageInfoSerializer(request.user)
-        return Response(serializer.data)
+    def get_object(self):
+        return self.request.user
