@@ -11,9 +11,6 @@ from django.conf.urls.static import static
 
 from drive.views import FolderViewSet, FileViewSet
 from accounts.views import (
-    WhoAmIView,
-    StorageInfoView,
-    UserViewSet,
     RegisterView,
     UserDetailView,
 )
@@ -21,7 +18,6 @@ from accounts.views import (
 router = routers.DefaultRouter()
 router.register("folders", FolderViewSet, basename="folder")
 router.register("files", FileViewSet, basename="file")
-router.register("users", UserViewSet, basename="user")
 
 urlpatterns = [
     # Admin routes
@@ -31,10 +27,8 @@ urlpatterns = [
     path("api/v1/token/refresh/", TokenRefreshView.as_view(), name="token-refresh"),
     path("api/v1/token/verify/", TokenVerifyView.as_view(), name="token-verify"),
     path("api/v1/register/", RegisterView.as_view(), name="register"),
-    path("api/v1/whoami/", WhoAmIView.as_view(), name="whoami"),
     # User routes
     path("api/v1/user/", UserDetailView.as_view(), name="user-detail"),
-    path("api/v1/details/", StorageInfoView.as_view(), name="details"),
     # API routes
     path("api/v1/", include(router.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
